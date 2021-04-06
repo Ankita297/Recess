@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { db, auth } from "../../firebase";
+import { db, auth,provider } from "../../firebase";
 import Logo from "../../assets/logo.png";
 import Post from "../../components/Post";
 import ImageUpload from "../../components/ImageUploader";
 import Sidebar from "../../components/Sidebar";
 import Footer from "../../components/Footer";
-
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Button, TextField, Modal, IconButton } from "@material-ui/core";
 import { WbSunnyRounded, Brightness2Rounded } from "@material-ui/icons";
-
+import GoogleButton from "react-google-button";
 import InstagramEmbed from "react-instagram-embed";
 import "./style.css";
 
@@ -125,6 +124,24 @@ function Homepage() {
 
     setOpenSignIn(false);
   };
+  const googleSignIn=(event)=>{
+    auth.signInWithPopup(provider)
+    .then((result) => {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+  
+      var token = credential.accessToken;
+      var user = result.user;
+      // ...
+    }).catch((error) => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      var email = error.email;
+      var credential = error.credential;
+      // ...
+    });
+  
+  }
 
   return (
     <>
@@ -215,6 +232,16 @@ function Homepage() {
               Sign In
             </Button>
           </form>
+          <h3><span>OR</span></h3>
+
+          <GoogleButton 
+              onClick={()=>googleSignIn()}
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              style={{marginLeft:"22%",marginTop:"6%"}}
+           />
+
         </div>
       </Modal>
 
